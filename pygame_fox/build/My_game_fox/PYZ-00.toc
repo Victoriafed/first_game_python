@@ -1,4 +1,4 @@
-('C:\\Dev\\game\\pygame_start\\pygame_fox\\build\\My_game_fox\\PYZ-00.pyz',
+('C:\\Dev\\game\\first_game_python\\pygame_fox\\build\\My_game_fox\\PYZ-00.pyz',
  [('__future__', 'C:\\Python311\\Lib\\__future__.py', 'PYMODULE'),
   ('_aix_support', 'C:\\Python311\\Lib\\_aix_support.py', 'PYMODULE'),
   ('_bootsubprocess', 'C:\\Python311\\Lib\\_bootsubprocess.py', 'PYMODULE'),

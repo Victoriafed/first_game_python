@@ -19,7 +19,7 @@ game_over = 0
 level = 1
 main_menu = True
 done = False
-max_levels = 10
+max_levels = 4
 score = 0
 
 display = pygame.display.set_mode((screen_width, screen_height))
