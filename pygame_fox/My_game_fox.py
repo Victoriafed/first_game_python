@@ -4,7 +4,6 @@ from pygame import mixer
 import pickle
 from os import path
 
-
 pygame.mixer.pre_init(44100, -16, 2, 512)
 mixer.init()
 pygame.init()
@@ -25,7 +24,6 @@ score = 0
 display = pygame.display.set_mode((screen_width, screen_height))
 
 pygame.display.set_caption('Fox game')
-
 
 font_score = pygame.font.SysFont('Bauhaus 93', 30)
 white = (255, 255, 255)
@@ -55,6 +53,7 @@ crown_fx.set_volume(0.5)
 dead_fx = pygame.mixer.Sound('sounds/dead.wav')
 dead_fx.set_volume(0.3)
 
+
 class Button():
     def __init__(self, x, y, image):
         self.image = pygame.transform.scale(image, (175, 80))
@@ -70,10 +69,8 @@ class Button():
             if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
                 action = True
                 self.clicked = True
-
         if pygame.mouse.get_pressed()[0] == 0:
             self.clicked = False
-
         display.blit(self.image, self.rect)
 
         return action
@@ -152,10 +149,12 @@ class Player():
                     dx = 0
                 if platform.rect.colliderect(self.rect.x, self.rect.y + dy,
                                              self.width, self.height):
-                    if abs((self.rect.top + dy) - platform.rect.bottom) < col_thresh:
+                    if abs((
+                                   self.rect.top + dy) - platform.rect.bottom) < col_thresh:
                         self.vel_y = 0
                         dy = platform.rect.bottom - self.rect.top
-                    elif abs((self.rect.bottom + dy) - platform.rect.top) < col_thresh:
+                    elif abs((
+                                     self.rect.bottom + dy) - platform.rect.top) < col_thresh:
                         self.rect.bottom = platform.rect.top - 1
                         self.in_air = False
                         dy = 0
@@ -164,7 +163,6 @@ class Player():
 
         self.rect.x += dx
         self.rect.y += dy
-
         display.blit(self.image, self.rect)
 
         return game_over
@@ -196,7 +194,6 @@ class World():
         self.tile_list = []
         self.line = pygame.draw.line(display, (255, 255, 255), (0, 525),
                                      (1000, 525), 2)
-
         row_count = 0
         for row in data:
             col_count = 0
@@ -222,16 +219,20 @@ class World():
                                  row_count * tile_size - 75)
                     bear_group.add(bear)
                 if tile == 4:
-                    exit = Exit(col_count * tile_size, row_count * tile_size - 35)
+                    exit = Exit(col_count * tile_size,
+                                row_count * tile_size - 35)
                     exit_group.add(exit)
                 if tile == 5:
-                    crown = Crown((col_count * tile_size + tile_size // 4), row_count * tile_size + tile_size //  2)
+                    crown = Crown((col_count * tile_size + tile_size // 4),
+                                  row_count * tile_size + tile_size // 2)
                     crown_group.add(crown)
                 if tile == 6:
-                    platform = Platform(col_count * tile_size, row_count * tile_size, 0, 1)
+                    platform = Platform(col_count * tile_size,
+                                        row_count * tile_size, 0, 1)
                     platform_group.add(platform)
                 if tile == 7:
-                    platform = Platform(col_count * tile_size, row_count * tile_size, 1, 0)
+                    platform = Platform(col_count * tile_size,
+                                        row_count * tile_size, 1, 0)
                     platform_group.add(platform)
                 col_count += 1
             row_count += 1
@@ -239,6 +240,7 @@ class World():
     def draw(self):
         for tile in self.tile_list:
             display.blit(tile[0], tile[1])
+
 
 class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y, move_x, move_y):
@@ -259,6 +261,7 @@ class Platform(pygame.sprite.Sprite):
         if abs(self.move_counter) > 50:
             self.move_direction *= -1
             self.move_counter *= -1
+
 
 class Crown(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -321,6 +324,7 @@ def reset_level(level):
 
     return world
 
+
 def draw_text(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
     display.blit(img, (x, y))
@@ -368,12 +372,15 @@ while not done:
                 crown_fx.play()
             img = pygame.transform.scale(crown_img, (30, 30))
             display.blit(img, (52, 50))
-            draw_text('x'+ str(score), font_score, white, 85, 60)
+            draw_text('x' + str(score), font_score, white, 85, 60)
+            draw_text(f'level - {level}', font_score, white, 130, 60)
 
         if game_over == -1:
             display.fill((0, 0, 0))
-            draw_text('GAME OVER', pygame.font.SysFont('Bauhaus 93', 100), (215, 125, 49), screen_width // 2 - 220, 230)
-            draw_text(f'Your score: {score}', pygame.font.SysFont('Bauhaus 93', 50),
+            draw_text('GAME OVER', pygame.font.SysFont('Bauhaus 93', 100),
+                      (215, 125, 49), screen_width // 2 - 220, 230)
+            draw_text(f'Your score: {score}',
+                      pygame.font.SysFont('Bauhaus 93', 50),
                       (80, 125, 42), screen_width // 2 - 100, 300)
             if exit_button.draw():
                 done = True
@@ -395,13 +402,12 @@ while not done:
             display.fill((0, 0, 0))
             draw_text(f'You WINN!',
                       pygame.font.SysFont('Bauhaus 93', 100),
-                      (255, 69, 0), screen_width // 2 - 100, 200)
+                      (255, 69, 0), screen_width // 2 - 170, 300)
             draw_text(f'Your score: {score}',
                       pygame.font.SysFont('Bauhaus 93', 50),
-                      (80, 125, 42), screen_width // 2 - 100, 300)
+                      (80, 125, 42), screen_width // 2 - 100, 370)
             if exit_button.draw():
                 done = True
 
     pygame.display.update()
-
 pygame.quit()

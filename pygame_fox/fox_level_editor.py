@@ -32,7 +32,6 @@ level = 1
 
 font = pygame.font.SysFont('Futura', 30)
 
-
 world_data = []
 for row in range(14):
     r = [0] * 20
@@ -65,28 +64,33 @@ def draw_world():
         for col in range(20):
             if world_data[row][col] > 0:
                 if world_data[row][col] == 1:
-                    img = pygame.transform.scale(bs_img, (tile_size, tile_size))
+                    img = pygame.transform.scale(bs_img,
+                                                 (tile_size, tile_size))
                     display.blit(img, (col * tile_size, row * tile_size))
                 if world_data[row][col] == 2:
-                    img = pygame.transform.scale(log_img,((215, 40)))
+                    img = pygame.transform.scale(log_img, ((215, 40)))
                     display.blit(img, (col * tile_size, row * tile_size))
                 if world_data[row][col] == 3:
-                    img = pygame.transform.scale(bear_img,(140, 140))
-                    display.blit(img,(col * tile_size - 30, row * tile_size -75))
+                    img = pygame.transform.scale(bear_img, (140, 140))
+                    display.blit(img,
+                                 (col * tile_size - 30, row * tile_size - 75))
                 if world_data[row][col] == 4:
-                    img = pygame.transform.scale(exit_level_img, (tile_size, tile_size))
+                    img = pygame.transform.scale(exit_level_img,
+                                                 (tile_size, tile_size))
                     display.blit(img, (col * tile_size, row * tile_size))
                 if world_data[row][col] == 5:
-                    img = pygame.transform.scale(crown_img, (tile_size * 0.8, tile_size * 0.8))
-                    display.blit(img, (col * tile_size + tile_size // 7, row * tile_size + tile_size // 4))
+                    img = pygame.transform.scale(crown_img, (
+                    tile_size * 0.8, tile_size * 0.8))
+                    display.blit(img, (col * tile_size + tile_size // 7,
+                                       row * tile_size + tile_size // 4))
                 if world_data[row][col] == 6:
-                    img = pygame.transform.scale(log_img, (tile_size * 2, tile_size))
+                    img = pygame.transform.scale(log_img,
+                                                 (tile_size * 2, tile_size))
                     display.blit(img, (col * tile_size, row * tile_size))
                 if world_data[row][col] == 7:
-                    img = pygame.transform.scale(log_img, (tile_size * 2, tile_size))
+                    img = pygame.transform.scale(log_img,
+                                                 (tile_size * 2, tile_size))
                     display.blit(img, (col * tile_size, row * tile_size))
-
-
 
 
 class Button():
@@ -135,7 +139,8 @@ while not done:
     draw_grid()
     draw_world()
 
-    pygame.draw.rect(display, (0, 0, 0), pygame.Rect(tile_size // 2, 710, 350, 50))
+    pygame.draw.rect(display, (0, 0, 0),
+                     pygame.Rect(tile_size // 2, 710, 350, 50))
     draw_text(f'Level: {level}', font, (255, 255, 255), tile_size * 2, 710)
     draw_text('Press UP or DOWN to change level', font, (255, 255, 255),
               tile_size // 2,
@@ -169,4 +174,3 @@ while not done:
                 level -= 1
     pygame.display.update()
 pygame.quit()
-
