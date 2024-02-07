@@ -1,7 +1,7 @@
 import arcade
 
 SCREEN_TITLE = "Fox game"
-DEFAULT_SCREEN_WIDTH = 700
+DEFAULT_SCREEN_WIDTH = 800
 DEFAULT_SCREEN_HEIGHT = 600
 TILE_SCALING = 0.5
 GRAVITY = 0.25
@@ -10,36 +10,30 @@ JUMP_SPEED = 10
 CHARACTER_SCALING = 0.6
 WIGHT_FOX = 100
 HEIGHT_FOX = 50
-GAME_WIN = False
+
+
 class Fox(arcade.Sprite):
     """Player sprite"""
 
     def __init__(self):
         super().__init__()
-        self.cur_texture = 0
         self.scale = CHARACTER_SCALING
-        self.direction = 0
         self.walk_images = []
         for i in range(2):
             self.walk_images.append(arcade.load_texture(f'images/fox{i}.png'))
         self.texture = self.walk_images[1]
 
-    def update_animation(self, delta_time: float = 1 / 60):
+    def update_animation(self, delta_time=1 / 60):
         if self.change_x < 0:
             self.texture = self.walk_images[0]
         elif self.change_x > 0:
             self.texture = self.walk_images[1]
 
 
-class MyGame(arcade.Window):
-    """ Main application class. """
+class MyGame(arcade.View):
+    def __init__(self):
+        super().__init__()
 
-    def __init__(self, width, height, title):
-        """ Initializer for the game """
-
-        super().__init__(width, height, title, resizable=True)
-
-        self.jump = 0
         self.score = 0
         self.player_list = None
         self.wall_list = None
@@ -48,10 +42,9 @@ class MyGame(arcade.Window):
         self.tile_map = None
         self.camera_sprites = None
         self.camera_gui = None
+        self.collect_apple_sound = arcade.load_sound(":resources:sounds/coin1.wav")
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
-
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
         self.camera_sprites = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
@@ -86,8 +79,6 @@ class MyGame(arcade.Window):
         )
 
     def on_draw(self):
-        """ Render the screen. """
-
         self.clear()
         self.camera_sprites.use()
 
@@ -106,9 +97,6 @@ class MyGame(arcade.Window):
         )
 
     def on_key_press(self, key, modifiers):
-        """
-        Called whenever a key is pressed.
-        """
         if key == arcade.key.UP:
             if key == arcade.key.UP:
                 if self.physics_engine.can_jump():
@@ -119,9 +107,10 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+        elif key == arcade.key.ESCAPE:
+            self.window.close()
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
         if key == arcade.key.UP or key == arcade.key.W:
             self.player_sprite.change_y = 0
         elif key == arcade.key.DOWN or key == arcade.key.S:
@@ -145,31 +134,49 @@ class MyGame(arcade.Window):
         self.camera_sprites.move_to(player_centered, speed)
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
-
         self.physics_engine.update()
         self.player_sprite.update_animation()
+        self.center_camera_to_player()
 
         apple_hit_list = arcade.check_for_collision_with_list(
             self.player_sprite, self.scene['Apple']
         )
-
-
-
         for apple in apple_hit_list:
+            arcade.play_sound(self.collect_apple_sound)
             apple.remove_from_sprite_lists()
             self.score += 1
 
 
+class MenuView(arcade.View):
+    bg_music = arcade.load_sound("bg_music.mp3")
+    bg_music = arcade.play_sound(bg_music)
+    bg_music.volume = 0.2
 
-        self.center_camera_to_player()
+    def on_draw(self):
+        arcade.start_render()
+        arcade.draw_texture_rectangle(400, 300, 800,
+                                      600, arcade.load_texture("images/background.png"))
+        arcade.draw_text("Fox game", DEFAULT_SCREEN_WIDTH / 2, DEFAULT_SCREEN_HEIGHT - 200,
+                         arcade.color.BLACK, font_size=50, anchor_x="center")
+        arcade.draw_text("Click to Start", DEFAULT_SCREEN_WIDTH / 2, DEFAULT_SCREEN_HEIGHT / 2,
+                         arcade.color.BLACK, font_size=20, anchor_x="center")
 
-def main():
-    """ Main function """
-    window = MyGame(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
-    arcade.run()
+    def on_mouse_press(self, x, y, button, modifiers):
+        game_view = MyGame()
+        game_view.setup()
+        self.window.show_view(game_view)
+
+    def on_key_press(self, key, modifiers):
+        if key == arcade.key.ESCAPE:
+            self.window.close()
+        if key == arcade.key.ENTER:
+            game_view = MyGame()
+            game_view.setup()
+            self.window.show_view(game_view)
 
 
 if __name__ == "__main__":
-    main()
+    window = arcade.Window(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT, SCREEN_TITLE)
+    start_view = MenuView()
+    window.show_view(start_view)
+    arcade.run()
